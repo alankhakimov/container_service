@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BMI Calculator</title>
+</head>
+<body>
+  <h1>BMI Calculator</h1>
+
+  <label>Weight (kg): <input id="weight" type="number" step="any"></label><br>
+  <label>Height (cm): <input id="height" type="number" step="any"></label><br>
+  <button id="go">Calculate</button>
+
+  <pre id="out"></pre>
+
+  <script>
+    document.getElementById("go").addEventListener("click", async () => {
+      const out = document.getElementById("out");
+
+      const payload = {
+        weight_kg: parseFloat(document.getElementById("weight").value),
+        height_cm: parseFloat(document.getElementById("height").value),
+      };
+
+      const res = await fetch("/bmi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      out.textContent = res.ok
+        ? `BMI: ${data.bmi} (${data.category})`
+        : "Error: " + JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
